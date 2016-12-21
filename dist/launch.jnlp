@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="http://erwin/apps/acf2cdf" href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>ACF to netCDF Converter</title>
+        <vendor>NOAA/PMEL</vendor>
+        <homepage href="http://saga.pmel.noaa.gov"/>
+        <description>Converts an ACF file to an EPIC netCDF file for use on the ACF
+dataserver</description>
+        <description kind="short">ACF to netCDF Converter</description>
+    </information>
+<security>
+<all-permissions/>
+</security>
+    <resources>
+<j2se version="1.5+"/>
+<jar href="acf2cdf.jar" main="true"/>
+    <jar href="lib/appframework-1.0.3.jar"/>
+<jar href="lib/swing-worker-1.1.jar"/>
+<jar href="lib/netcdf-2.2.22.jar"/>
+<jar href="lib/nlog4j-1.2.25.jar"/>
+<jar href="lib/epic.jar"/>
+</resources>
+    <application-desc main-class="acf2cdf.Acf2cdfApp">
+    </application-desc>
+</jnlp>

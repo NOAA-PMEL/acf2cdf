@@ -1,0 +1,12 @@
+K 10
+svn:ignore
+V 95
+acg_apr09_epic.key
+agc_dec08_epic.key
+installer
+acg_jun09_epic.key
+build
+dist
+.~lock.epic.key#
+
+END

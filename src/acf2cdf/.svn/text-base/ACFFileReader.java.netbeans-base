@@ -1,0 +1,380 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package acf2cdf;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author derek
+ */
+public class ACFFileReader {
+
+    private File acfFile;
+    private MaskFileReader maskFile = null;
+    private ACFHeader header = new ACFHeader();
+    private List<ACFDimension> dimensions = new ArrayList<ACFDimension>();
+    private List<ACFVariable> parameters = new ArrayList<ACFVariable>();
+    private boolean timeHasSeconds = false;
+    protected boolean evenTimeStep = false;
+
+    public ACFFileReader(String fileName) throws IOException {
+        if (!setFileName(fileName)) {
+            throw new IOException("ACF File: " + fileName + " does not exist!");
+        }
+    }
+
+    public boolean setFileName(String fileName) {
+        acfFile = new File(fileName);
+        return acfFile.exists();
+
+    }
+
+    public void setMaskFile(MaskFileReader maskReader) {
+        maskFile = maskReader;
+        try {
+            maskFile.parse();
+        } catch (IOException ex) {
+            Logger.getLogger(ACFFileReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public String getNextLine(BufferedReader reader) throws IOException {
+        if (!reader.ready()) {
+            //throw new IOException("ACF file: " + acfFile.getAbsolutePath() + " is empty.");
+            return new String("");
+        }
+        return reader.readLine();
+    }
+
+    public void parse() throws IOException {
+        BufferedReader acfReader = new BufferedReader(new FileReader(acfFile));
+        String line;
+
+        line = getNextLine(acfReader);
+        while (!line.isEmpty()) {
+
+            //line = acfReader.readLine();
+
+            if (isSectionName(line)) {
+                String section = getSectionName(line);
+
+                if (section.equals("HEADER")) {
+                    line = parseHeader(acfReader);
+                    if (header.getEntryValueByName("DATA_TYPE").equals("TIMESERIES-1D")) {
+                        addACFDimensions();
+
+                    }
+                } else if (section.equals("TIME PARAMETERS")) {
+                    // check which time style we are using
+                    line = getNextLine(acfReader);
+                    if (line.equals("year month day hour minute second")) {
+                        timeHasSeconds = true;
+                    }
+                    line = getNextLine(acfReader);
+                } else if (section.equals("PARAMETER")) {
+                    // add parameter
+                    line = parseParameter(acfReader);
+
+                    //} else if (section.equals("DATA X HEADINGS")) {
+                } else if (section.startsWith("DATA") && section.endsWith("HEADINGS")) {
+                    Scanner input = new Scanner(getSectionName(line));
+                    input.skip("DATA");
+                    //String s = input.next();
+                    int headings = input.nextInt();
+
+                    for (int i = 0; i < headings; i += 1) {
+                        line = getNextLine(acfReader);
+                    }
+
+                    line = parseData(acfReader);
+                    break;
+                }
+
+            } else {
+                line = getNextLine(acfReader);
+            }
+        }
+
+//        for (ACFVariable par : parameters) {
+//            double[] d = par.getData().get();
+//            System.out.println(par.getHeader().getHeaderEntry("name") + ":");
+//            for (double val : d) {
+//                System.out.print("\t" + val);
+//
+//            }
+//            System.out.println();
+//        }
+    }
+
+    private boolean isSectionName(String line) {
+        if (line.startsWith("#") && line.endsWith("#")) {
+            return true;
+        }
+        return false;
+    }
+
+    private String getSectionName(String line) {
+        return line.substring(1, line.length() - 1);
+    }
+
+    /**
+     * Get the value of evenTimeStep
+     *
+     * @return the value of evenTimeStep
+     */
+    public boolean isEvenTimeStep() {
+        return evenTimeStep;
+    }
+
+    /**
+     * Set the value of evenTimeStep
+     *
+     * @param evenTimeStep new value of evenTimeStep
+     */
+    public void setEvenTimeStep(boolean evenTimeStep) {
+        this.evenTimeStep = evenTimeStep;
+    }
+
+    private String parseHeader(BufferedReader reader) throws IOException {
+        String line;
+        String section;
+
+        line = getNextLine(reader);
+        while (!line.isEmpty()) {
+            if (isSectionName(line)) {
+                section = getSectionName(line);
+                if (section.equals("REMARKS")) {
+                    // process remarks
+                    line = processHeaderRemarks(reader);
+                } else {
+                    return line;
+                }
+            } else {
+                header.addEntry(line);
+                line = getNextLine(reader);
+            }
+
+        }
+
+        return line;
+    }
+
+    private String processHeaderRemarks(BufferedReader reader) throws IOException {
+        String line;
+        line = getNextLine(reader);
+        while (!line.isEmpty()) {
+            if (isSectionName(line)) {
+                return line;
+            } else {
+                header.addRemark(line);
+                line = getNextLine(reader);
+            }
+        }
+        return line;
+    }
+
+    private void addACFDimensions() {
+
+        // time
+        //ACFDimension timeDim = new ACFDimension("time", true, true);
+        //timeDim.setTimeData(true);
+        //dimensions.add(timeDim);
+        dimensions.add(new ACFDimension("time", true, true));
+
+        // depth (dep)
+        dimensions.add(new ACFDimension("dep", false, false));
+
+        // latitude (lat)
+        dimensions.add(new ACFDimension("lat", false, false));
+
+        //longitude (lon)
+        dimensions.add(new ACFDimension("lon", false, false));
+
+
+
+
+    }
+
+    private String parseParameter(BufferedReader reader) throws IOException {
+        String line;
+        String section;
+        int cnt = 1;
+
+        line = getNextLine(reader);
+        if (line.isEmpty()) {
+            throw new IOException("error reading Parameter info");
+        }
+        // first line is name
+        ACFVariable par = new ACFVariable(line, "TIMESERIES-1D");
+        cnt++;
+        line = getNextLine(reader);
+        while (!line.isEmpty()) {
+            if (isSectionName(line)) {
+                section = getSectionName(line);
+                if (section.equals("PARAMETER NOTES")) {
+                    // process remarks
+                    line = processParameterNotes(reader, par);
+                } else {
+                    break;
+                    //return line;
+                }
+            } else {
+                String key = "";
+
+                switch (cnt) {
+                    case 2:
+                        key = "units";
+                        break;
+                    case 3:
+                        key = "instr_id";
+                        break;
+                    case 4:
+                        key = "min_value";
+                        break;
+                    case 5:
+                        key = "max_value";
+                        break;
+                    case 6:
+                        key = "gap_value";
+                        break;
+                    case 7:
+                        key = "epic_code";
+                        break;
+                    default:
+                        break;
+                }
+                if (cnt >= 8) {
+                    throw new IOException("error reading Parameter info");
+                }
+
+                par.getHeader().setHeaderEntry(key, line);
+                cnt++;
+                line = getNextLine(reader);
+
+            }
+
+        }
+
+        parameters.add(par);
+
+        return line;
+
+    }
+
+    private String processParameterNotes(BufferedReader reader, ACFVariable par) throws IOException {
+        String line;
+        line = getNextLine(reader);
+        while (!line.isEmpty()) {
+            if (isSectionName(line)) {
+                return line;
+            } else {
+                par.getHeader().addNote(line);
+                line = getNextLine(reader);
+            }
+        }
+        return line;
+    }
+
+    private String parseData(BufferedReader reader) throws IOException {
+        String line;
+
+        while (reader.ready()) {
+            line = reader.readLine();
+            Scanner input = new Scanner(line);
+
+            String date_str = input.next() + "-" + input.next() + "-" + input.next() +
+                    " " + input.next() + ":" + input.next() + ":";
+
+            String secs = "00";
+            if (timeHasSeconds) {
+                secs = input.next();
+            }
+            date_str += secs;
+            //System.out.println("date: " + date_str);
+            try {
+                Date dat = new SimpleDateFormat(ACFTimeData.rfc3339Format).parse(date_str);
+                for (ACFDimension dim : dimensions) {
+                    if (dim.getName().equals("time")) {
+                        dim.getData().appendTime(dat);
+                        break;
+                    }
+                }
+            } catch (ParseException ex) {
+                Logger.getLogger(ACFFileReader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            for (ACFVariable par : parameters) {
+                Double d = input.nextDouble();
+                par.getData().append(d);
+            }
+
+        }
+
+        return null;
+    }
+
+    public void process() {
+        // check for even time steps, gaps, etc
+        ACFDimension timeDim = getTimeDimension();
+        if (timeDim == null) {
+            throw new UnsupportedOperationException("Can't process data...no Time Dimension");
+        }
+
+        ACFTimeUtil timeUtil = new ACFTimeUtil(timeDim.getData().getTime());
+        
+        timeUtil.isMonotonic();
+        if (timeUtil.hasGaps()) {
+            for (ACFTimeGap gap : timeUtil.getGaps()) {
+                SimpleDateFormat fmt = new SimpleDateFormat(ACFTimeData.rfc3339Format);
+                System.out.println("Time gap at data point # " + gap.getDataPoint() +
+                        " from " + fmt.format(gap.getStart()) +
+                        " to " + fmt.format(gap.getEnd()) );
+            }
+        }
+        
+        if (evenTimeStep) {
+            timeUtil.hasEvenTimeStep();
+        }
+        
+        // mask data of needed
+        if (maskFile != null) {
+            Date t[] = timeDim.getData().getTime();
+            for (int i=0; i<t.length; i+=1) {
+                if (maskFile.isMasked(t[i])) {
+                    for (ACFVariable param : parameters) {
+                        param.setBadAtIndex(i);
+                    }
+                }
+            }
+        }
+
+        
+    }
+
+    public void writeToNetCDF() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private ACFDimension getTimeDimension() {
+        for (ACFDimension dim : dimensions) {
+            if (dim.getName().equals("time")) {
+                return dim;
+            }
+        }
+        return null;
+    }
+}

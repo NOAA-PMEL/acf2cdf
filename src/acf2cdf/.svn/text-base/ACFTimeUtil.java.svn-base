@@ -1,0 +1,83 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package acf2cdf;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author derek
+ */
+public class ACFTimeUtil {
+
+    List<Date> dates = null;
+    List<ACFTimeGap> gaps = null;
+    double delta = 0;
+
+    public ACFTimeUtil(Date[] d) {
+        if (d != null) {
+            dates = new ArrayList<Date>();
+            for (int i = 0; i < d.length; i += 1) {
+                dates.add(d[i]);
+            }
+        }
+
+    }
+
+    public List<ACFTimeGap> getGaps() {
+        return gaps;
+    }
+
+    public double getDelta() {
+        return delta;
+    }
+
+    public boolean isMonotonic() {
+        for (int i = 1; i < dates.size(); i += 1) {
+            if (calcDelta(i - 1, i) <= 0) {
+                String msg = "Time is not monotonic at data point # " + i;
+                throw new UnsupportedOperationException(msg);
+            }
+        }
+        return true;
+    }
+
+    public boolean hasGaps() {
+
+        gaps = new ArrayList<ACFTimeGap>();
+
+        if (delta == 0) {
+            initDelta();
+        }
+
+        for (int i = 1; i < dates.size(); i += 1) {
+            if (calcDelta(i - 1, i) > delta) {
+                gaps.add(new ACFTimeGap(i, dates.get(i - 1), dates.get(i)));
+            }
+        }
+
+        return !gaps.isEmpty();
+    }
+
+    public boolean hasEvenTimeStep() {
+        for (int i = 1; i < dates.size(); i += 1) {
+            if ((calcDelta(i - 1, i) % delta) != 0) {
+                String msg = "Time step is not even at data point # " + i;
+                throw new UnsupportedOperationException(msg);
+            }
+        }
+        return true;
+    }
+
+    private void initDelta() {
+        delta = calcDelta(0, 1);
+    }
+
+    private double calcDelta(int start, int end) {
+        return dates.get(end).getTime() - dates.get(start).getTime();
+    }
+}

@@ -1,0 +1,125 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf
+END
+ACFVariable.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFVariable.java
+END
+ACFDimension.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFDimension.java
+END
+ACFTimeGap.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFTimeGap.java
+END
+ACFTimeData.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFTimeData.java
+END
+ACFHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFHeader.java
+END
+Acf2cdfView.form
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/Acf2cdfView.form
+END
+ACFTimeUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFTimeUtil.java
+END
+ACFVariableHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFVariableHeader.java
+END
+ACFDimensionHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFDimensionHeader.java
+END
+ACFData1d.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFData1d.java
+END
+ACFFileReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFFileReader.java
+END
+Acf2cdfAboutBox.form
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/Acf2cdfAboutBox.form
+END
+MaskFileReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/MaskFileReader.java
+END
+ACFIndex.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFIndex.java
+END
+Acf2cdfView.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/Acf2cdfView.java
+END
+ACFParameterData.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFParameterData.java
+END
+ACFHeaderEntry.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/ACFHeaderEntry.java
+END
+Acf2cdfApp.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/Acf2cdfApp.java
+END
+Mask.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/Mask.java
+END
+Acf2cdfAboutBox.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/java/!svn/ver/2/acf2cdf/src/acf2cdf/Acf2cdfAboutBox.java
+END

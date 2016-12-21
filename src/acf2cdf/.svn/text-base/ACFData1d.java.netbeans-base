@@ -1,0 +1,59 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package acf2cdf;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+/**
+ *
+ * @author derek
+ */
+public class ACFData1d implements ACFParameterData {
+
+    ArrayList<Double> data = new ArrayList<Double>();
+
+    public void append(double dat) {
+        data.add(dat);
+    }
+
+    public void append(double[] dat) {
+        throw new UnsupportedOperationException("Wrong type...only supports 1d.");
+    }
+
+    public void append(double[][] dat) {
+        throw new UnsupportedOperationException("Wrong type...only supports 1d.");
+    }
+
+    public double[] get() {
+        double[] data_array = new double[data.size()];
+        for (int i=0; i<data.size(); i+=1) {
+            data_array[i] = data.get(i);
+        }
+        return data_array;
+    }
+
+    public double[][] get2d() {
+        throw new UnsupportedOperationException("Wrong type...only supports 1d.");
+    }
+
+    public double[][][] get3d() {
+        throw new UnsupportedOperationException("Wrong type...only supports 1d.");
+    }
+
+    public void appendTime(Date dat) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Date[] getTime() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void set(int i, double val) {
+        data.set(i, val);
+    }
+
+}

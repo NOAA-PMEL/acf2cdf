@@ -1,0 +1,31 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package acf2cdf;
+
+import java.util.Date;
+
+/**
+ *
+ * @author derek
+ */
+public interface ACFParameterData {
+
+    public void append(double dat);
+    public void appendTime(Date dat);
+    public void append(double[] dat);
+    public void append(double[][] dat);
+
+    public double[] get();
+    public double[][] get2d();
+    public double[][][] get3d();
+    public Date[] getTime();
+
+    public void set(int i, double val);
+    // get as cdf parameter
+
+
+
+}

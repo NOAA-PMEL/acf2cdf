@@ -1,0 +1,55 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package acf2cdf;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author derek
+ */
+public class ACFVariableHeader {
+
+    List<ACFHeaderEntry> entries = new ArrayList<ACFHeaderEntry>();
+    List<String> notes = new ArrayList<String>();
+
+    public ACFVariableHeader() {
+        entries.add(new ACFHeaderEntry("name", ""));
+        entries.add(new ACFHeaderEntry("long_name", ""));
+        entries.add(new ACFHeaderEntry("generic_name", ""));
+        entries.add(new ACFHeaderEntry("FORTRAN_format", ""));
+        entries.add(new ACFHeaderEntry("units", ""));
+        entries.add(new ACFHeaderEntry("epic_code", ""));
+        entries.add(new ACFHeaderEntry("plot_lab", ""));
+        entries.add(new ACFHeaderEntry("instr_id", ""));
+        entries.add(new ACFHeaderEntry("min_value", ""));
+        entries.add(new ACFHeaderEntry("max_value", ""));
+        entries.add(new ACFHeaderEntry("gap_value", ""));
+
+    }
+
+    public boolean setHeaderEntry(String name, String value) {
+        for (ACFHeaderEntry entry : entries) {
+            if (entry.getName().equals(name)) {
+                entry.setValue(value);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getHeaderEntry(String name) {
+        for (ACFHeaderEntry entry : entries) {
+            if (entry.getName().equals(name))
+                return entry.getValue();
+        }
+        return null;
+    }
+
+    public void addNote(String note_str) {
+        notes.add(note_str);
+    }
+}
