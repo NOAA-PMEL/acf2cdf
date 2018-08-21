@@ -7,7 +7,7 @@ package acf2cdf;
 
 /**
  *
- * @author derek
+ * @author derek - test add for git purposes
  */
 public class ACFDimension {
 
